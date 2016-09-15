@@ -1,25 +1,26 @@
-var expect = require('chai').expect,
-	_ = require('lodash'),
-	combinatorics = require('js-combinatorics'),
-    scapegoat = require('../index');
+'use strict'
 
-describe('wordlist', function() {
-  it('should have 7776 entries', function() {
-    expect(_.keys(scapegoat).length).to.equal(7776);
-  });
+const expect = require('chai').expect
+const _ = require('lodash')
+const combinatorics = require('js-combinatorics')
+const lang = require('../index')
 
-  it('should have all possible 5-dice rolls', function() {
-  	var cmb = combinatorics.baseN(['1','2','3','4', '5', '6'], 5);
-	var cnt = 0;
-	while(dice = cmb.next()) {
-		dice_str = dice.join('');
-		expect(scapegoat[dice_str], "combination: "+dice_str).to.be.a('string');
-	}
-  });
+describe('wordlist', function () {
+  it('should have 7776 entries', function () {
+    expect(_.keys(lang).length).to.equal(7776)
+  })
 
-  it('should have unique words', function() {
-  	var values = _.values(scapegoat);
-  	var unique = _.uniq(values);
-    expect(values.length).to.equal(_.uniq(values).length);
-  });
-});
+  it('should support all possible 5-die roll combinations', function () {
+    let cmb = combinatorics.baseN(['1', '2', '3', '4', '5', '6'], 5)
+
+    cmb.forEach(function (d) {
+      let dice_str = d.join('')
+      expect(lang[dice_str], 'combination: ' + dice_str).to.be.a('string')
+    })
+  })
+
+  it('should have no duplicate words', function () {
+    let values = _.values(lang)
+    expect(values.length).to.equal(_.uniq(values).length)
+  })
+})
